@@ -46,13 +46,15 @@ def load_sprite_sheet(
 		ny,
 		scalex = -1,
 		scaley = -1,
-		colorkey = None,
+		colorkey = None, render_mode="human"
 		):
 	#fullname = os.path.join(sheetname)
 	fullname = sprite_path(sheetname)
 	sheet = pygame.image.load(fullname)
-	sheet = sheet.convert()
-
+	if render_mode == "human":
+		sheet = sheet.convert()
+	else:
+		sheet = sheet.convert_alpha()
 	sheet_rect = sheet.get_rect()
 
 	sprites = []
@@ -108,9 +110,10 @@ def extractDigits(number):
 		return digits
 
 class Dino():
-	def __init__(self,sizex=-1,sizey=-1):
-		self.images,self.rect = load_sprite_sheet('dino.png',5,1,sizex,sizey,-1)
-		self.images1,self.rect1 = load_sprite_sheet('dino_ducking.png',2,1,59,sizey,-1)
+	def __init__(self,sizex=-1,sizey=-1,render_mode="human"):
+		self.render_mode=render_mode
+		self.images,self.rect = load_sprite_sheet('dino.png',5,1,sizex,sizey,-1,,render_mode=self.render_mode)
+		self.images1,self.rect1 = load_sprite_sheet('dino_ducking.png',2,1,59,sizey,-1,,render_mode=self.render_mode)
 		self.rect.bottom = int(0.98*height)
 		self.rect.left = width/15
 		self.image = self.images[0]
@@ -175,9 +178,10 @@ class Dino():
 		self.counter = (self.counter + 1)
 
 class Cactus(pygame.sprite.Sprite):
-	def __init__(self,speed=5,sizex=-1,sizey=-1):
+	def __init__(self,speed=5,sizex=-1,sizey=-1,render_mode="human"):
+		self.render_mode=render_mode
 		pygame.sprite.Sprite.__init__(self,self.containers)
-		self.images,self.rect = load_sprite_sheet('cacti-small.png',3,1,sizex,sizey,-1)
+		self.images,self.rect = load_sprite_sheet('cacti-small.png',3,1,sizex,sizey,-1,,render_mode=self.render_mode)
 		self.rect.bottom = int(0.98*height)
 		self.rect.left = width + self.rect.width
 		self.image = self.images[random.randrange(0,3)]
@@ -193,9 +197,10 @@ class Cactus(pygame.sprite.Sprite):
 			self.kill()
 
 class Ptera(pygame.sprite.Sprite):
-	def __init__(self,speed=5,sizex=-1,sizey=-1):
+	def __init__(self,speed=5,sizex=-1,sizey=-1,render_mode="human"):
+		self.render_mode=render_mode
 		pygame.sprite.Sprite.__init__(self,self.containers)
-		self.images,self.rect = load_sprite_sheet('ptera.png',2,1,sizex,sizey,-1)
+		self.images,self.rect = load_sprite_sheet('ptera.png',2,1,sizex,sizey,-1,render_mode=self.render_mode)
 		self.ptera_height = [height*0.82,height*0.75,height*0.60]
 		self.rect.centery = self.ptera_height[random.randrange(0,3)]
 		self.rect.left = width + self.rect.width
@@ -218,7 +223,8 @@ class Ptera(pygame.sprite.Sprite):
 
 
 class Ground():
-	def __init__(self,speed=-5):
+	def __init__(self,speed=-5,render_mode="human"):
+		self.render_mode=render_mode
 		self.image,self.rect = load_image('ground.png',-1,-1,-1)
 		self.image1,self.rect1 = load_image('ground.png',-1,-1,-1)
 		self.rect.bottom = height
@@ -241,7 +247,10 @@ class Ground():
 			self.rect1.left = self.rect.right
 
 class Cloud(pygame.sprite.Sprite):
-	def __init__(self,x,y):
+	def __init__(self,x,y,render_mode="human"):
+		self.render_mode=render_mode
+
+		
 		pygame.sprite.Sprite.__init__(self,self.containers)
 		self.image,self.rect = load_image('cloud.png',int(90*30/42),30,-1)
 		self.speed = 1
@@ -258,9 +267,10 @@ class Cloud(pygame.sprite.Sprite):
 			self.kill()
 
 class Scoreboard():
-	def __init__(self,x=-1,y=-1):
+	def __init__(self,x=-1,y=-1,render_mode="human"):
+		self.render_mode=render_mode
 		self.score = 0
-		self.tempimages,self.temprect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1)
+		self.tempimages,self.temprect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1,render_mode=self.render_mode)
 		self.image = pygame.Surface((55,int(11*6/5)))
 		self.rect = self.image.get_rect()
 		if x == -1:
@@ -312,9 +322,9 @@ class DinoEnv(gym.Env):
 
 		self.gamespeed = 4
 		self.gameOver = False
-		self.playerDino = Dino(44,47)
-		self.new_ground = Ground(-1*self.gamespeed)
-		self.scb = Scoreboard()
+		self.playerDino = Dino(44,47,render_mode=self.render_mode)
+		self.new_ground = Ground(-1*self.gamespeed,render_mode=self.render_mode)
+		self.scb = Scoreboard(render_mode=self.render_mode)
 		self.counter = 0
 		self.done = False
 
@@ -335,7 +345,7 @@ class DinoEnv(gym.Env):
 		Ptera.containers = self.pteras
 		Cloud.containers = self.clouds
 
-		self.temp_images, self.temp_rect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1)
+		self.temp_images, self.temp_rect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1,render_mode=self.render_mode)
 		HI_image = pygame.Surface((22,int(11*6/5)))
 		HI_rect = HI_image.get_rect()
 		HI_image.fill(background_col)
@@ -375,21 +385,21 @@ class DinoEnv(gym.Env):
 			if len(self.cacti) < 2:
 				if len(self.cacti) == 0:
 					self.last_obstacle.empty()
-					self.last_obstacle.add(Cactus(self.gamespeed,40,40))
+					self.last_obstacle.add(Cactus(self.gamespeed,40,40,render_mode=self.render_mode))
 				else:
 					for l in self.last_obstacle:
 						if l.rect.right < width*0.7 and random.randrange(0,50) == 10:
 							self.last_obstacle.empty()
-							self.last_obstacle.add(Cactus(self.gamespeed, 40, 40))
+							self.last_obstacle.add(Cactus(self.gamespeed, 40, 40,render_mode=self.render_mode))
 
 			if len(self.pteras) == 0 and random.randrange(0,200) == 10 and self.counter > 500:
 				for l in self.last_obstacle:
 					if l.rect.right < width*0.8:
 						self.last_obstacle.empty()
-						self.last_obstacle.add(Ptera(self.gamespeed, 46, 40))
+						self.last_obstacle.add(Ptera(self.gamespeed, 46, 40,render_mode=self.render_mode))
 
 			if len(self.clouds) < 5 and random.randrange(0,300) == 10:
-				Cloud(width,random.randrange(height/5,height/2))
+				Cloud(width,random.randrange(height/5,height/2),render_mode=self.render_mode)
 
 			self.playerDino.update()
 			self.cacti.update()
@@ -436,8 +446,8 @@ class DinoEnv(gym.Env):
 		super().reset(seed=seed)   
 		self.gamespeed = 4
 		self.gameOver = False
-		self.playerDino = Dino(44,47)
-		self.new_ground = Ground(-1*self.gamespeed)
+		self.playerDino = Dino(44,47,render_mode=self.render_mode)
+		self.new_ground = Ground(-1*self.gamespeed,render_mode=self.render_mode)
 		self.scb = Scoreboard()
 		self.counter = 0
 		self.done = False
@@ -451,7 +461,7 @@ class DinoEnv(gym.Env):
 		Ptera.containers = self.pteras
 		Cloud.containers = self.clouds
 
-		self.temp_images, self.temp_rect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1)
+		self.temp_images, self.temp_rect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1,render_mode=self.render_mode)
 
 
 		obs = pygame.surfarray.array3d(pygame.display.get_surface())
