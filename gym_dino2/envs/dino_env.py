@@ -112,8 +112,8 @@ def extractDigits(number):
 class Dino():
 	def __init__(self,sizex=-1,sizey=-1,render_mode="human"):
 		self.render_mode=render_mode
-		self.images,self.rect = load_sprite_sheet('dino.png',5,1,sizex,sizey,-1,,render_mode=self.render_mode)
-		self.images1,self.rect1 = load_sprite_sheet('dino_ducking.png',2,1,59,sizey,-1,,render_mode=self.render_mode)
+		self.images,self.rect = load_sprite_sheet('dino.png',5,1,sizex,sizey,-1,render_mode=self.render_mode)
+		self.images1,self.rect1 = load_sprite_sheet('dino_ducking.png',2,1,59,sizey,-1,render_mode=self.render_mode)
 		self.rect.bottom = int(0.98*height)
 		self.rect.left = width/15
 		self.image = self.images[0]
@@ -181,7 +181,7 @@ class Cactus(pygame.sprite.Sprite):
 	def __init__(self,speed=5,sizex=-1,sizey=-1,render_mode="human"):
 		self.render_mode=render_mode
 		pygame.sprite.Sprite.__init__(self,self.containers)
-		self.images,self.rect = load_sprite_sheet('cacti-small.png',3,1,sizex,sizey,-1,,render_mode=self.render_mode)
+		self.images,self.rect = load_sprite_sheet('cacti-small.png',3,1,sizex,sizey,-1,render_mode=self.render_mode)
 		self.rect.bottom = int(0.98*height)
 		self.rect.left = width + self.rect.width
 		self.image = self.images[random.randrange(0,3)]
