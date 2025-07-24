@@ -10,8 +10,8 @@ setup(name='gym_dino2',
 	version='0.0.1',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
-	install_requires=['gym', 'pygame'],
+	install_requires=['gymnasium', 'pygame'],
 
-	package_data={ 'gym_dino': ['gym_dino/envs/sprites/*'] },
+	package_data={ 'gym_dino2': ['gym_dino/envs/sprites/*'] },
 	include_package_data=True
 )
