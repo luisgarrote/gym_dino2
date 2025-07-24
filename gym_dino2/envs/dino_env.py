@@ -53,9 +53,15 @@ def load_sprite_sheet(
 			
 	if not pygame.get_init():
 		pygame.init()
+		print("on init")
 
 	if not pygame.display.get_init():
-		pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)			
+		pygame.display.init()
+		pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
+		print("on init2")
+	if pygame.display.get_surface() is None:
+		pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)
+		print("Set hidden display")
 	fullname = sprite_path(sheetname)
 	sheet = pygame.image.load(fullname)
 	if render_mode == "human":
@@ -415,18 +421,22 @@ class DinoEnv(gym.Env):
 			self.new_ground.update()
 			self.scb.update(self.playerDino.score)
 
-			if pygame.display.get_surface() != None:
-				self.screen.fill(background_col)
-				self.new_ground.draw(self.screen)
-				self.clouds.draw(self.screen)
-				self.scb.draw(self.screen)
-				self.cacti.draw(self.screen)
-				self.pteras.draw(self.screen)
-				self.playerDino.draw(self.screen)
+			#if pygame.display.get_surface() != None:
+			self.screen.fill(background_col)
+			self.new_ground.draw(self.screen)
+			self.clouds.draw(self.screen)
+			self.scb.draw(self.screen)
+			self.cacti.draw(self.screen)
+			self.pteras.draw(self.screen)
+			self.playerDino.draw(self.screen)
+
+			#if self.render_mode == "human":
+		#		pygame.display.get_surface().blit(self.screen, (0, 0))
+		#		pygame.display.flip()
 
 			self.clock.tick(self.FPS)
 
-			self.obs = pygame.surfarray.array3d(pygame.display.get_surface())
+			self.obs = pygame.surfarray.array3d(self.screen)
 
 			if self.playerDino.isDead:
 				self.gameOver = True
@@ -471,12 +481,12 @@ class DinoEnv(gym.Env):
 		self.temp_images, self.temp_rect = load_sprite_sheet('numbers.png',12,1,11,int(11*6/5),-1,render_mode=self.render_mode)
 
 
-		obs = pygame.surfarray.array3d(pygame.display.get_surface())
-		#print(obs.shape)
+		obs = pygame.surfarray.array3d(self.screen)
+		print(obs.shape)
 		return obs, {}
 	def render(self, mode='human'):
 		if self.render_mode == "rgb_array":
-			data = pygame.surfarray.array3d(pygame.display.get_surface())  
+			data = pygame.surfarray.array3d(self.screen)  
 			return np.transpose(data, (1, 0, 2)) 
 		elif self.render_mode == "human":
 			pygame.display.update()
