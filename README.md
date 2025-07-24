@@ -35,9 +35,6 @@ Demo code:
 import gymnasium as gym
 import gym_dino2
 
-
-import time
-
 # Create the environment
 env = gym.make('dino-v0')
 
@@ -46,12 +43,8 @@ done = False
 
 while not done:
     env.render()
-    time.sleep(0.02)  # Slight delay so it doesn't go too fast
-
-    # For demo: take random actions
     action = env.action_space.sample()
     obs, reward, done, truncated, info = env.step(action)
-#return self.obs, self.playerDino.score, terminated, truncated, info
 env.close()
 ```
 ---
