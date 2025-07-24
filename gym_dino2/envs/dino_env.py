@@ -430,11 +430,11 @@ class DinoEnv(gym.Env):
 			self.pteras.draw(self.screen)
 			self.playerDino.draw(self.screen)
 
-			#if self.render_mode == "human":
+			if self.render_mode == "human":
 		#		pygame.display.get_surface().blit(self.screen, (0, 0))
 		#		pygame.display.flip()
 
-			self.clock.tick(self.FPS)
+				self.clock.tick(self.FPS)
 
 			self.obs = pygame.surfarray.array3d(self.screen)
 
