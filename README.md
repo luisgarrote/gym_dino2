@@ -20,6 +20,8 @@ You can change the FPS of the game by adjusting the env.FPS value. By default, i
 `
 2 : Jump
 `
+
+
 <img width="598" height="148" alt="image" src="https://github.com/user-attachments/assets/29f4dcec-ca72-496c-8cfc-dd01fb9f538f" />
 
 You can import it as:
