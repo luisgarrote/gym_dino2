@@ -49,6 +49,13 @@ def load_sprite_sheet(
 		colorkey = None, render_mode="human"
 		):
 	#fullname = os.path.join(sheetname)
+
+			
+	if not pygame.get_init():
+		pygame.init()
+
+	if not pygame.display.get_init():
+		pygame.display.set_mode((1, 1), flags=pygame.HIDDEN)			
 	fullname = sprite_path(sheetname)
 	sheet = pygame.image.load(fullname)
 	if render_mode == "human":
