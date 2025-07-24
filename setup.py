@@ -12,6 +12,6 @@ setup(name='gym_dino2',
 	long_description_content_type='text/markdown',
 	install_requires=['gymnasium', 'pygame'],
 
-	package_data={ 'gym_dino2': ['gym_dino2/envs/sprites/*'] },
+	package_data={ 'gym_dino2': ['envs/sprites/*'] },
 	include_package_data=True
 )
