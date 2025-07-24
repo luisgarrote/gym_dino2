@@ -287,7 +287,7 @@ class DinoEnv(gym.Env):
 
 	def __init__(self, render_mode='human'):
 		self.render_mode = render_mode
-        self.metadata = {'render_modes': ['human', "rgb_array"],'render_fps': 60}
+		self.metadata = {'render_modes': ['human', "rgb_array"],'render_fps': 60}
 
 		pygame.init()
 		
