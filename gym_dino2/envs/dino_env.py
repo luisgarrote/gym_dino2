@@ -11,18 +11,13 @@ import gymnasium as gym
 from gymnasium import error, spaces, utils
 from gymnasium.utils import seeding
 
-pygame.init()
-
 scr_size = (width,height) = (600,150)
 gravity = 0.6
-
+		
 black = (0,0,0)
 white = (255,255,255)
 background_col = (235,235,235)
-
-screen = pygame.display.set_mode(scr_size)
-clock = pygame.time.Clock()
-pygame.display.set_caption("T-Rex Rush")
+		
 
 def load_image(
 	name,
@@ -132,7 +127,7 @@ class Dino():
 		self.stand_pos_width = self.rect.width
 		self.duck_pos_width = self.rect1.width
 
-	def draw(self):
+	def draw(self,screen):
 		screen.blit(self.image,self.rect)
 
 	def checkbounds(self):
@@ -188,7 +183,7 @@ class Cactus(pygame.sprite.Sprite):
 		self.image = self.images[random.randrange(0,3)]
 		self.movement = [-1*speed,0]
 
-	def draw(self):
+	def draw(self,screen):
 		screen.blit(self.image,self.rect)
 
 	def update(self):
@@ -209,7 +204,7 @@ class Ptera(pygame.sprite.Sprite):
 		self.index = 0
 		self.counter = 0
 
-	def draw(self):
+	def draw(self,screen):
 		screen.blit(self.image,self.rect)
 
 	def update(self):
@@ -231,7 +226,7 @@ class Ground():
 		self.rect1.left = self.rect.right
 		self.speed = speed
 
-	def draw(self):
+	def draw(self,screen):
 		screen.blit(self.image,self.rect)
 		screen.blit(self.image1,self.rect1)
 
@@ -254,7 +249,7 @@ class Cloud(pygame.sprite.Sprite):
 		self.rect.top = y
 		self.movement = [-1*self.speed,0]
 
-	def draw(self):
+	def draw(self,screen):
 		screen.blit(self.image,self.rect)
 
 	def update(self):
@@ -277,7 +272,7 @@ class Scoreboard():
 		else:
 			self.rect.top = y
 
-	def draw(self):
+	def draw(self,screen):
 		screen.blit(self.image,self.rect)
 
 	def update(self,score):
@@ -293,6 +288,27 @@ class DinoEnv(gym.Env):
 
 	def __init__(self, render_mode='human'):
 		self.render_mode = render_mode
+
+		pygame.init()
+		
+		#scr_size = (width,height) = (600,150)
+		#gravity = 0.6
+		
+		#self.black = (0,0,0)
+		#self.white = (255,255,255)
+		#self.background_col = (235,235,235)
+		
+		#self.screen = pygame.display.set_mode(scr_size)
+
+		if self.render_mode == "human":
+			self.screen = pygame.display.set_mode((600, 150))
+		else:
+			self.screen = pygame.Surface((600, 150)) 
+		self.clock = pygame.time.Clock()
+		pygame.display.set_caption("T-Rex Rush")
+
+		
+
 		self.gamespeed = 4
 		self.gameOver = False
 		self.playerDino = Dino(44,47)
@@ -300,7 +316,6 @@ class DinoEnv(gym.Env):
 		self.scb = Scoreboard()
 		self.counter = 0
 		self.done = False
-
 
 
 		self.action_space = spaces.Discrete(3)  # should be "do nothing", jump and duck
@@ -383,15 +398,15 @@ class DinoEnv(gym.Env):
 			self.scb.update(self.playerDino.score)
 
 			if pygame.display.get_surface() != None:
-				screen.fill(background_col)
-				self.new_ground.draw()
-				self.clouds.draw(screen)
-				self.scb.draw()
-				self.cacti.draw(screen)
-				self.pteras.draw(screen)
-				self.playerDino.draw()
+				self.screen.fill(background_col)
+				self.new_ground.draw(self.screen)
+				self.clouds.draw(self.screen)
+				self.scb.draw(self.screen)
+				self.cacti.draw(self.screen)
+				self.pteras.draw(self.screen)
+				self.playerDino.draw(self.screen)
 
-			clock.tick(self.FPS)
+			self.clock.tick(self.FPS)
 
 			self.obs = pygame.surfarray.array3d(pygame.display.get_surface())
 
