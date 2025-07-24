@@ -1,6 +1,6 @@
-# OpenAI Gym Environment of the Chrome T-Rex Game
+# Gymnasium Environment of the Chrome T-Rex Game
 
-A pygame based port of the Chrome T-Rex Game as an OpenAI Gym Environment.
+A pygame based port of the Chrome T-Rex Game as an Gymnasium Environment.
 
 ## Important info
 
@@ -20,27 +20,38 @@ You can change the FPS of the game by adjusting the env.FPS value. By default, i
 `
 2 : Jump
 `
-
-You can install this from PYPI:
-
-```
-pip3 install gym-dino
-```
+<img width="598" height="148" alt="image" src="https://github.com/user-attachments/assets/29f4dcec-ca72-496c-8cfc-dd01fb9f538f" />
 
 You can import it as:
 
 ```
-import gym_dino
+import gym_dino2
 ```
 
-### Small backstory
+Demo code:
+```
+import gymnasium as gym
+import gym_dino2
 
-I am currently working on some reinforcement learning research problems and really wanted a simple yet effective environment to train an agent on. I realised that the Chrome game ain't bad at all especially in this scenario.
 
-So have fun, any help to further develop on this is welcome.
+import time
 
-Right now, only ```render```, ```step```, ```reset``` and ```close``` function have been implemented.
+# Create the environment
+env = gym.make('dino-v0')
 
+obs,info = env.reset()
+done = False
+
+while not done:
+    env.render()
+    time.sleep(0.02)  # Slight delay so it doesn't go too fast
+
+    # For demo: take random actions
+    action = env.action_space.sample()
+    obs, reward, done, truncated, info = env.step(action)
+#return self.obs, self.playerDino.score, terminated, truncated, info
+env.close()
+```
 ---
 
-Special thanks to [Shivam Shekar's](https://github.com/shivamshekhar/Chrome-T-Rex-Rush) implementation of the original game using pygame.
+Adapted from  [Rochan-A's gym-dino](https://github.com/Rochan-A/gym-dino).
