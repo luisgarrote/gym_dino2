@@ -442,7 +442,12 @@ class DinoEnv(gym.Env):
 		#print(obs.shape)
 		return obs, {}
 	def render(self, mode='human'):
-		pygame.display.update()
+		if self.render_mode == "rgb_array":
+			data = pygame.surfarray.array3d(pygame.display.get_surface())  
+			return np.transpose(data, (1, 0, 2)) 
+		elif self.render_mode == "human":
+			pygame.display.update()
+
 
 	def close(self):
 		pygame.quit()
